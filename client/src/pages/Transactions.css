@@ -1,0 +1,26 @@
+/* Quick Access Cards */
+.quick-card {
+  border-radius: 1rem !important;
+  background: white;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.quick-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Dialogs - modern look */
+.MuiDialog-paper {
+  border-radius: 1rem !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4) !important;
+}
+.MuiDialogTitle-root {
+  font-weight: bold;
+  text-align: center;
+  background: linear-gradient(135deg, #1976d2, #42a5f5);
+  color: white;
+}
+.MuiDialogActions-root {
+  padding: 1rem;
+  justify-content: space-between;
+}

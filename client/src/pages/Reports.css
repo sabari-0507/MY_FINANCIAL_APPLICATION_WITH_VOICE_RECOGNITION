@@ -1,0 +1,40 @@
+/* ✨ Summary Cards Styling */
+.summary-card {
+  border-radius: 1rem !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  color: white !important;
+}
+.summary-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Gradient backgrounds */
+.income-card {
+  background: linear-gradient(135deg, #00c853, #64dd17);
+}
+.expense-card {
+  background: linear-gradient(135deg, #e53935, #ff5252);
+}
+.balance-card {
+  background: linear-gradient(135deg, #2196f3, #42a5f5);
+}
+
+/* Chart Cards */
+.chart-card {
+  border-radius: 1rem !important;
+  overflow: hidden;
+}
+.chart-card .card-header {
+  font-size: 1rem;
+  letter-spacing: 1px;
+}
+
+.summary-card {
+  transition: all 0.3s ease-in-out;
+}
+.summary-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3) !important;
+  cursor: pointer;
+}
