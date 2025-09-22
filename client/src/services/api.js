@@ -25,7 +25,7 @@ export const getTransactions = async () => {
     const res = await apiClient.get(API);
     return res.data;
   } catch (err) {
-    console.error("❌ Error fetching transactions:", err.response?.data || err);
+    console.error(" Error fetching transactions:", err.response?.data || err);
     throw err;
   }
 };
@@ -36,7 +36,7 @@ export const addTransaction = async (txn) => {
     const res = await apiClient.post(API, txn);
     return res.data;
   } catch (err) {
-    console.error("❌ Error adding transaction:", err.response?.data || err);
+    console.error(" Error adding transaction:", err.response?.data || err);
     throw err;
   }
 };
@@ -45,9 +45,9 @@ export const addTransaction = async (txn) => {
 export const deleteTransaction = async (id) => {
   try {
     const res = await apiClient.delete(`${API}/${id}`);
-    return res.data; // ✅ now consistent (return something)
+    return res.data; //  now consistent (return something)
   } catch (err) {
-    console.error("❌ Error deleting transaction:", err.response?.data || err);
+    console.error(" Error deleting transaction:", err.response?.data || err);
     throw err;
   }
 };
@@ -58,7 +58,7 @@ export const updateTransaction = async (id, txn) => {
     const res = await apiClient.put(`${API}/${id}`, txn);
     return res.data;
   } catch (err) {
-    console.error("❌ Error updating transaction:", err.response?.data || err);
+    console.error(" Error updating transaction:", err.response?.data || err);
     throw err;
   }
 };

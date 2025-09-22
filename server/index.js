@@ -17,8 +17,8 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log("✅ MongoDB Connected"))
-  .catch((err) => console.error("❌ MongoDB Error:", err));
+  .then(() => console.log(" MongoDB Connected"))
+  .catch((err) => console.error(" MongoDB Error:", err));
 
 // ====== Schemas / Models ======
 const userSchema = new mongoose.Schema(
@@ -294,4 +294,4 @@ app.delete("/api/reminders/:id", authMiddleware, async (req, res) => {
 
 // ====== Start ======
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(` Server running on port ${PORT}`));
