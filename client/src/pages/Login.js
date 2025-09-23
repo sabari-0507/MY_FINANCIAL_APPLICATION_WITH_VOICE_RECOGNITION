@@ -26,18 +26,21 @@ export default function AuthCard() {
   const { login, isAuthenticated } = useContext(AuthContext);
   const { t } = useContext(LanguageContext);
 
+  // Redirect logged-in user away from login/register page
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (isAuthenticated) {
+      navigate("/dashboard", { replace: true });
+    } else {
       setForm({ name: "", email: "", password: "" });
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, navigate]);
 
   const handleLogin = async () => {
     try {
       const res = await loginApi(form.email, form.password);
       login(res.token, res.user);
       setMsg("✅ Login successful!");
-      setTimeout(() => navigate("/"), 800);
+      setTimeout(() => navigate("/dashboard"), 800); // go straight to dashboard
     } catch {
       setMsg("❌ Invalid credentials");
     }
@@ -218,4 +221,3 @@ export default function AuthCard() {
     </Box>
   );
 }
-
