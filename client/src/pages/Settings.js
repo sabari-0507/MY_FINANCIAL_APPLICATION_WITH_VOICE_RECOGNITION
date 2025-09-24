@@ -55,17 +55,6 @@ export default function Settings() {
         })
       );
 
-      // ✅ Update password if both fields filled and match
-      if (form.newPassword && form.confirmPassword) {
-        if (form.newPassword === form.confirmPassword) {
-          await updatePasswordApi(user._id || user.id, form.newPassword);
-          console.log("Password updated in DB ✅");
-        } else {
-          alert("❌ Passwords do not match!");
-          return;
-        }
-      }
-
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (err) {

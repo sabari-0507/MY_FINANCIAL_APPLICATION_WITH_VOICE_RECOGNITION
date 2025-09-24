@@ -15,11 +15,11 @@ import {
   Divider,
   InputAdornment,
 } from "@mui/material";
-import { Person, Email, Lock } from "@mui/icons-material";
+import { Person, Email, Lock, Phone } from "@mui/icons-material";
 
 export default function AuthCard() {
   const [isRegister, setIsRegister] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [form, setForm] = useState({ name: "", email: "", password: "", phone: "" });
   const [msg, setMsg] = useState("");
 
   const navigate = useNavigate();
@@ -48,7 +48,7 @@ export default function AuthCard() {
 
   const handleRegister = async () => {
     try {
-      await registerApi(form.name, form.email, form.password);
+      await registerApi(form.name, form.email, form.password, form.phone);
       setMsg("✅ Registration successful! You can now log in.");
       setIsRegister(false);
     } catch {
@@ -147,6 +147,24 @@ export default function AuthCard() {
                 startAdornment: (
                   <InputAdornment position="start">
                     <Person color="action" />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          )}
+
+          {isRegister && (
+            <TextField
+              fullWidth
+              margin="normal"
+              label={t.mobileNumber}
+              type="tel"
+              value={form.phone}
+              onChange={(e) => setForm({ ...form, phone: e.target.value })}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Phone color="action" />
                   </InputAdornment>
                 ),
               }}

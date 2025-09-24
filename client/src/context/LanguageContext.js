@@ -55,6 +55,12 @@ const translations = {
     monthlyReport: "Monthly Report",
     month: "Month",
     total: "Total",
+    excel: "Excel",
+    pdf: "PDF",
+    phone: "Phone",
+    mobileNumber: "Mobile Number",
+    income: "income",
+    expense: "expense",
   },
   ta: {
     appTitle: "தனிநபர் நிதி",
@@ -108,6 +114,12 @@ const translations = {
     monthlyReport: "மாதாந்திர அறிக்கை",
     month: "மாதம்",
     total: "மொத்தம்",
+    excel: "எக்செல்",
+    pdf: "பி.டி.எப்",
+    phone: "தொலைபேசி",
+    mobileNumber: "கைபேசி எண்",
+    income: "வருமானம்",
+    expense: "செலவு",
   },
   hi: {
     appTitle: "व्यक्तिगत वित्त",
@@ -161,6 +173,12 @@ const translations = {
     monthlyReport: "मासिक रिपोर्ट",
     month: "महीना",
     total: "कुल",
+    excel: "एक्सेल",
+    pdf: "पीडीएफ",
+    phone: "फोन",
+    mobileNumber: "मोबाइल नंबर",
+    income: "आय",
+    expense: "खर्च",
                   
   },
 };

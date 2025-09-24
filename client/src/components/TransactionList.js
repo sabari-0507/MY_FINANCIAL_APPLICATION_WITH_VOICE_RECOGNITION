@@ -58,20 +58,20 @@ function TransactionList({ compactFilesOnly = false }) {
           <TableRow>
             {compactFilesOnly ? (
               <>
-                <TableCell>{t("files")}</TableCell>
-                <TableCell>{t("trip")}</TableCell>
-                <TableCell>{t("report")}</TableCell>
+                <TableCell>{t.files}</TableCell>
+                <TableCell>{t.trip}</TableCell>
+                <TableCell>{t.report}</TableCell>
               </>
             ) : (
               <>
-                <TableCell>{t("type")}</TableCell>
-                <TableCell>{t("category")}</TableCell>
-                <TableCell>{t("amount")}</TableCell>
-                <TableCell>{t("date")}</TableCell>
-                <TableCell>{t("files")}</TableCell>
-                <TableCell>{t("report")}</TableCell>
-                <TableCell>{t("trip")}</TableCell>
-                <TableCell>{t("actions")}</TableCell>
+                <TableCell>{t.type}</TableCell>
+                <TableCell>{t.category}</TableCell>
+                <TableCell>{t.amount}</TableCell>
+                <TableCell>{t.date}</TableCell>
+                <TableCell>{t.files}</TableCell>
+                <TableCell>{t.report}</TableCell>
+                <TableCell>{t.trip}</TableCell>
+                <TableCell>{t.actions}</TableCell>
               </>
             )}
           </TableRow>
@@ -97,7 +97,7 @@ function TransactionList({ compactFilesOnly = false }) {
                 <>
                   {/* Translate expense/income */}
                   <TableCell>
-                    {tx.type === "expense" ? t("expense") : t("income")}
+                    {tx.type === "expense" ? t.expense : t.income}
                   </TableCell>
                   <TableCell>{tx.category}</TableCell>
                   <TableCell>{tx.amount}</TableCell>
@@ -122,7 +122,7 @@ function TransactionList({ compactFilesOnly = false }) {
                       onClick={() => handleEditClick(tx)}
                       style={{ marginRight: "8px" }}
                     >
-                      {t("edit")}
+                      {t.edit}
                     </Button>
                     <Button
                       variant="outlined"
@@ -130,7 +130,7 @@ function TransactionList({ compactFilesOnly = false }) {
                       size="small"
                       onClick={() => deleteTransaction(tx._id)}
                     >
-                      {t("delete")}
+                      {t.delete}
                     </Button>
                   </TableCell>
                 </>

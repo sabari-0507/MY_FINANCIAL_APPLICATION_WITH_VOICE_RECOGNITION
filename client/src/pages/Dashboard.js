@@ -41,6 +41,55 @@ function Dashboard() {
 
   const balance = income - expense;
 
+  const downloadCsv = (rows, filename) => {
+    if (!rows.length) return;
+    const csv = [Object.keys(rows[0]).join(",")]
+      .concat(rows.map((r) => Object.values(r).join(",")))
+      .join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const exportTransactionsCsv = () => {
+    const rows = transactions.map((x) => ({
+      [t.date]: x.date?.substring(0, 10) || "",
+      [t.category]: x.category,
+      [t.amount]: x.amount,
+      [t.type]: x.type,
+    }));
+    downloadCsv(rows, "transactions.csv");
+  };
+
+  const exportTransactionsPdf = () => {
+    const win = window.open("", "_blank");
+    if (!win) return;
+    const tableRows = transactions
+      .map(
+        (x) =>
+          `<tr><td>${x.date?.substring(0, 10) || ""}</td><td>${x.category}</td><td>${x.amount}</td><td>${x.type}</td></tr>`
+      )
+      .join("");
+    win.document.write(`
+      <html><head><title>${t.transactionList || "Transaction List"}</title>
+      <style>table{width:100%;border-collapse:collapse}td,th{border:1px solid #333;padding:6px;text-align:center}</style>
+      </head><body>
+      <h3>${t.transactionList || "Transaction List"}</h3>
+      <table>
+      <thead><tr><th>${t.date}</th><th>${t.category}</th><th>${t.amount}</th><th>${t.type}</th></tr></thead>
+      <tbody>${tableRows}</tbody>
+      </table>
+      <script>window.onload = () => window.print()</script>
+      </body></html>`);
+    win.document.close();
+  };
+
   const handleEdit = (txn) => {
     setEditingId(txn._id);
     setEditForm({ ...txn, date: txn.date?.substring(0, 10) });
@@ -272,15 +321,19 @@ function Dashboard() {
           </Typography>
           <Divider sx={{ mb: 3 }} />
 
+          <div className="d-flex justify-content-end gap-2 mb-2">
+            <button className="btn btn-outline-success btn-sm" onClick={exportTransactionsCsv}>{t.excel || "Excel"}</button>
+            <button className="btn btn-outline-danger btn-sm" onClick={exportTransactionsPdf}>{t.pdf || "PDF"}</button>
+          </div>
           <div className="table-responsive">
             <table className="table table-striped table-hover table-bordered rounded">
               <thead className="table-dark text-center">
                 <tr>
-                  <th>Date</th>
-                  <th>Category</th>
-                  <th>Amount</th>
-                  <th>Type</th>
-                  <th>Actions</th>
+                  <th>{t.date}</th>
+                  <th>{t.category}</th>
+                  <th>{t.amount}</th>
+                  <th>{t.type}</th>
+                  <th>{t.actions}</th>
                 </tr>
               </thead>
               <tbody>
@@ -341,12 +394,8 @@ function Dashboard() {
                           <option value="expense">Expense</option>
                         </select>
                       ) : (
-                        <span
-                          className={`badge ${
-                            txn.type === "income" ? "bg-success" : "bg-danger"
-                          }`}
-                        >
-                          {txn.type}
+                        <span className={`badge ${txn.type === "income" ? "bg-success" : "bg-danger"}`}>
+                          {txn.type === "income" ? t.income : t.expense}
                         </span>
                       )}
                     </td>
@@ -359,14 +408,14 @@ function Dashboard() {
                             size="small"
                             onClick={() => handleSave(txn._id)}
                           >
-                            Save
+                            {t.save}
                           </Button>
                           <Button
                             variant="outlined"
                             size="small"
                             onClick={() => setEditingId(null)}
                           >
-                            Cancel
+                            {t.cancel}
                           </Button>
                         </div>
                       ) : (
@@ -377,7 +426,7 @@ function Dashboard() {
                             size="small"
                             onClick={() => handleEdit(txn)}
                           >
-                            Edit
+                            {t.edit}
                           </Button>
                           <Button
                             variant="contained"
@@ -385,7 +434,7 @@ function Dashboard() {
                             size="small"
                             onClick={() => deleteTransaction(txn._id)}
                           >
-                            Delete
+                            {t.delete}
                           </Button>
                         </div>
                       )}

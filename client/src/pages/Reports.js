@@ -24,13 +24,15 @@ import BackgroundWrapper from "./BackgroundWrapper";
 
 export default function Reports() {
   const { transactions } = useContext(FinanceContext);
-  const { t } = useContext(LanguageContext);
+  const { t, lang } = useContext(LanguageContext);
 
   const safeTxns = transactions || [];
 
   const { monthlyArray, totals } = useMemo(() => {
     const monthlyData = transactions.reduce((acc, t) => {
-      const month = new Date(t.date).toLocaleString("default", { month: "short" });
+      const month = new Intl.DateTimeFormat(lang, { month: "short" }).format(
+        new Date(t.date)
+      );
       if (!acc[month]) acc[month] = { month, income: 0, expense: 0 };
       if (t.type === "income") acc[month].income += t.amount;
       else acc[month].expense += t.amount;
@@ -51,6 +53,56 @@ export default function Reports() {
   const totalIncome = totals.totalIncome;
   const totalExpense = totals.totalExpense;
   const totalNet = totalIncome - totalExpense; // ✅ FIXED
+
+  const downloadCsv = (rows, filename) => {
+    if (!rows.length) return;
+    const csv = [Object.keys(rows[0]).join(",")]
+      .concat(rows.map((r) => Object.values(r).join(",")))
+      .join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const exportMonthlyCsv = () => {
+    const rows = monthlyArray.map((m) => ({
+      [t.month]: m.month,
+      [t.totalIncome]: m.income,
+      [t.totalExpense]: m.expense,
+      [t.netBalance]: m.income - m.expense,
+    }));
+    downloadCsv(rows, "monthly_report.csv");
+  };
+
+  const exportMonthlyPdf = () => {
+    const win = window.open("", "_blank");
+    if (!win) return;
+    const tableRows = monthlyArray
+      .map((m) => {
+        const net = m.income - m.expense;
+        return `<tr><td>${m.month}</td><td>${m.income}</td><td>${m.expense}</td><td>${net}</td></tr>`;
+      })
+      .join("");
+    win.document.write(`
+      <html><head><title>${t.monthlyReport}</title>
+      <style>table{width:100%;border-collapse:collapse}td,th{border:1px solid #333;padding:6px;text-align:center}</style>
+      </head><body>
+      <h3>${t.monthlyReport}</h3>
+      <table>
+      <thead><tr><th>${t.month}</th><th>${t.totalIncome}</th><th>${t.totalExpense}</th><th>${t.netBalance}</th></tr></thead>
+      <tbody>${tableRows}</tbody>
+      <tfoot><tr><td>${t.total}</td><td>${totalIncome}</td><td>${totalExpense}</td><td>${totalNet}</td></tr></tfoot>
+      </table>
+      <script>window.onload = () => window.print()</script>
+      </body></html>`);
+    win.document.close();
+  };
 
   return (
     <BackgroundWrapper>
@@ -209,6 +261,10 @@ export default function Reports() {
 
         {/* ✅ Monthly Report Table */}
         <Paper className="mt-4 shadow-lg p-3" style={{ borderRadius: "12px" }}>
+          <div className="d-flex justify-content-end gap-2 mb-2">
+            <button className="btn btn-outline-success btn-sm" onClick={exportMonthlyCsv}>{t.excel}</button>
+            <button className="btn btn-outline-danger btn-sm" onClick={exportMonthlyPdf}>{t.pdf}</button>
+          </div>
           <Typography
             variant="h6"
             className="fw-bold text-center text-primary mb-3"

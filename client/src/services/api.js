@@ -76,8 +76,8 @@ export const loginApi = async (email, password) => {
 };
 
 // Register
-export const registerApi = async (name, email, password) => {
-  const res = await apiClient.post(`/api/auth/register`, { name, email, password });
+export const registerApi = async (name, email, password, phone) => {
+  const res = await apiClient.post(`/api/auth/register`, { name, email, password, phone });
   return res.data;
 };
 
