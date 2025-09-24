@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { LanguageContext } from "../context/LanguageContext";
-import my from '../photos/hi.jpg'
+import my from "../photos/hi.jpg";
 
 function Navbar() {
   const { isAuthenticated, logout, user } = useContext(AuthContext);
@@ -17,7 +17,7 @@ function Navbar() {
 
   return (
     <nav
-      className="navbar navbar-expand-lg"
+      className="navbar navbar-expand-lg navbar-dark"
       style={{
         background: "linear-gradient(135deg, #667eea, #764ba2, #ff758c)",
         padding: "12px 20px",
@@ -25,39 +25,38 @@ function Navbar() {
       }}
     >
       <div className="container-fluid">
-       
         {/* Logo / Brand */}
-{/* Logo / Brand */}
-<div
-  style={{
-    width: "60px",
-    height: "60px",
-    borderRadius: "50%",
-    background: "#fff", // pure white circle
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    overflow: "hidden",
-    marginRight: "15px",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-  }}
->
-  <img
-    src={my}
-    alt="App Logo"
-    style={{
-      width: "100%",
-      height: "100%",
-      objectFit: "cover", // ensures it fills the circle neatly
-    }}
-  />
-</div>
+        <Link to="/" className="navbar-brand d-flex align-items-center">
+          <div
+            style={{
+              width: "50px",
+              height: "50px",
+              borderRadius: "50%",
+              background: "#fff",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              overflow: "hidden",
+              marginRight: "10px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+            }}
+          >
+            <img
+              src={my}
+              alt="App Logo"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+            />
+          </div>
+          <span className="fw-bold text-white">My App</span>
+        </Link>
 
-
-
-        {/* Toggle button for mobile */}
+        {/* Mobile toggle button */}
         <button
-          className="navbar-toggler text-white"
+          className="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarNav"
@@ -68,26 +67,35 @@ function Navbar() {
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Navbar Links */}
+        {/* Collapsible menu */}
         <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav ms-auto align-items-center">
+          <ul className="navbar-nav ms-auto align-items-lg-center">
             <li className="nav-item">
-              <Link className="nav-link px-3 fw-semibold text-white hover-underline" to="/">
+              <Link className="nav-link px-3 fw-semibold text-white" to="/">
                 {t.dashboard}
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link px-3 fw-semibold text-white hover-underline" to="/transactions">
+              <Link
+                className="nav-link px-3 fw-semibold text-white"
+                to="/transactions"
+              >
                 {t.transactions}
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link px-3 fw-semibold text-white hover-underline" to="/reports">
+              <Link
+                className="nav-link px-3 fw-semibold text-white"
+                to="/reports"
+              >
                 {t.reports}
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link px-3 fw-semibold text-white hover-underline" to="/settings">
+              <Link
+                className="nav-link px-3 fw-semibold text-white"
+                to="/settings"
+              >
                 {t.settings}
               </Link>
             </li>
@@ -95,47 +103,57 @@ function Navbar() {
             {/* Language Dropdown */}
             <li className="nav-item dropdown">
               <button
-                className="btn btn-sm btn-light rounded-pill ms-3 fw-semibold"
-                onClick={() => setOpen(!open)}
+                className="btn btn-sm btn-light rounded-pill ms-lg-3 fw-semibold dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
               >
                 🌐 {t.language}
               </button>
-              {open && (
-                <ul
-                  className="dropdown-menu show shadow-sm border-0"
-                  style={{
-                    position: "absolute",
-                    right: 0,
-                    marginTop: "10px",
-                    borderRadius: "12px",
-                    overflow: "hidden",
-                  }}
-                >
-                  <li>
-                    <button className="dropdown-item" onClick={() => { setLang("en"); setOpen(false); }}>English</button>
-                  </li>
-                  <li>
-                    <button className="dropdown-item" onClick={() => { setLang("ta"); setOpen(false); }}>Tamil</button>
-                  </li>
-                  <li>
-                    <button className="dropdown-item" onClick={() => { setLang("hi"); setOpen(false); }}>Hindi</button>
-                  </li>
-                </ul>
-              )}
+              <ul className="dropdown-menu shadow-sm border-0">
+                <li>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => setLang("en")}
+                  >
+                    English
+                  </button>
+                </li>
+                <li>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => setLang("ta")}
+                  >
+                    Tamil
+                  </button>
+                </li>
+                <li>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => setLang("hi")}
+                  >
+                    Hindi
+                  </button>
+                </li>
+              </ul>
             </li>
 
+            {/* Auth Section */}
             {!isAuthenticated ? (
-              <li className="nav-item">
-                <Link className="btn btn-outline-light ms-3 rounded-pill fw-semibold" to="/login">
+              <li className="nav-item mt-2 mt-lg-0">
+                <Link
+                  className="btn btn-outline-light ms-lg-3 rounded-pill fw-semibold"
+                  to="/login"
+                >
                   {t.login}
                 </Link>
               </li>
             ) : (
               <>
                 {user && (
-                  <li className="nav-item">
+                  <li className="nav-item mt-2 mt-lg-0">
                     <span
-                      className="badge bg-light text-dark ms-3"
+                      className="badge bg-light text-dark ms-lg-3"
                       style={{
                         borderRadius: "20px",
                         padding: "8px 14px",
@@ -146,9 +164,9 @@ function Navbar() {
                     </span>
                   </li>
                 )}
-                <li className="nav-item">
+                <li className="nav-item mt-2 mt-lg-0">
                   <button
-                    className="btn btn-danger ms-3 rounded-pill fw-semibold"
+                    className="btn btn-danger ms-lg-3 rounded-pill fw-semibold"
                     onClick={handleLogout}
                   >
                     {t.logout}

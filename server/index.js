@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import path from "path";
+import fs from "fs";
 import { fileURLToPath } from "url";
 
 dotenv.config();
@@ -304,13 +305,13 @@ app.delete("/api/reminders/:id", authMiddleware, async (req, res) => {
 */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const buildPath = path.join(__dirname, "client", "build"); // adjust if your build output path differs
+const buildPath = path.join(__dirname, "..", "client", "build");
+const shouldServeSpa = process.env.SERVE_STATIC === "true" || fs.existsSync(buildPath);
 
-if (process.env.SERVE_STATIC === "true") {
+if (shouldServeSpa) {
   app.use(express.static(buildPath));
-  app.get("*", (req, res) => {
-    // if request is for api, let it through
-    if (req.path.startsWith("/api/")) return res.status(404).json({ error: "API route not found" });
+  // Serve index.html for all non-API GET requests (SPA fallback)
+  app.get(/^\/(?!api\/).*/, (req, res) => {
     res.sendFile(path.join(buildPath, "index.html"));
   });
 }
