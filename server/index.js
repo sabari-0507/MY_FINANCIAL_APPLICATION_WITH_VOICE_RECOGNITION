@@ -1,24 +1,40 @@
+// server.js (ES module)
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import path from "path";
+import { fileURLToPath } from "url";
 
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_ORIGIN || "*" // tighten this in production
+}));
 app.use(express.json());
 
 // MongoDB Connect
+const MONGO_URI = process.env.MONGO_URI;
+if (!MONGO_URI) {
+  console.error("Missing MONGO_URI in environment. Aborting.");
+  process.exit(1);
+}
+
 mongoose
-  .connect(process.env.MONGO_URI, {
+  .connect(MONGO_URI, {
+    // options
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log(" MongoDB Connected"))
-  .catch((err) => console.error(" MongoDB Error:", err));
+  .then(() => console.log("MongoDB Connected"))
+  .catch((err) => {
+    console.error("MongoDB Error:", err);
+    // exit or keep retrying depending on your preference
+    process.exit(1);
+  });
 
 // ====== Schemas / Models ======
 const userSchema = new mongoose.Schema(
@@ -72,6 +88,7 @@ const authMiddleware = (req, res, next) => {
     req.userId = decoded.userId;
     next();
   } catch (err) {
+    console.error("Auth error:", err);
     return res.status(401).json({ error: "Invalid token" });
   }
 };
@@ -108,8 +125,6 @@ app.post("/api/auth/login", async (req, res) => {
 });
 
 // ====== Transaction Routes ======
-
-// GET all transactions for user
 app.get("/api/transactions", authMiddleware, async (req, res) => {
   try {
     const transactions = await Transaction.find({ user: req.userId }).sort({ date: -1 });
@@ -120,13 +135,12 @@ app.get("/api/transactions", authMiddleware, async (req, res) => {
   }
 });
 
-// CREATE transaction
 app.post("/api/transactions", authMiddleware, async (req, res) => {
   try {
     const payload = { ...req.body, user: req.userId, date: new Date(req.body.date || Date.now()) };
     const newTxn = await Transaction.create(payload);
 
-    // gamification update (kept simple)
+    // gamification update
     const user = await User.findById(req.userId);
     if (user) {
       let updatedBadges = Array.isArray(user.badges) ? [...user.badges] : [];
@@ -134,7 +148,6 @@ app.post("/api/transactions", authMiddleware, async (req, res) => {
       if (totalTxns === 1 && !updatedBadges.includes("First Transaction")) updatedBadges.push("First Transaction");
       if (payload.source === "voice" && !updatedBadges.includes("Voice Starter")) updatedBadges.push("Voice Starter");
 
-      // streak update
       let newStreak = user.streak || 0;
       if (user.lastTransactionDate) {
         const diffDays = Math.floor((Date.now() - new Date(user.lastTransactionDate)) / (1000 * 60 * 60 * 24));
@@ -153,17 +166,14 @@ app.post("/api/transactions", authMiddleware, async (req, res) => {
     res.status(201).json({ transaction: newTxn });
   } catch (err) {
     console.error("Add txn error:", err);
-    res.status(400).json({ error: "Invalid data" });
+    res.status(400).json({ error: "Invalid data", details: err.message });
   }
 });
 
-// UPDATE transaction (PUT and PATCH supported) — allows partial updates
 const updateTransactionHandler = async (req, res) => {
   try {
     const { id } = req.params;
     const update = { ...req.body };
-
-    // if date provided, convert to Date
     if (update.date) update.date = new Date(update.date);
 
     const updated = await Transaction.findOneAndUpdate(
@@ -183,7 +193,6 @@ const updateTransactionHandler = async (req, res) => {
 app.put("/api/transactions/:id", authMiddleware, updateTransactionHandler);
 app.patch("/api/transactions/:id", authMiddleware, updateTransactionHandler);
 
-// DELETE transaction
 app.delete("/api/transactions/:id", authMiddleware, async (req, res) => {
   try {
     const deleted = await Transaction.findOneAndDelete({ _id: req.params.id, user: req.userId });
@@ -196,7 +205,7 @@ app.delete("/api/transactions/:id", authMiddleware, async (req, res) => {
   }
 });
 
-// ====== Voice Transaction Route (robust) ======
+// ====== Voice Transaction Route ======
 app.post("/api/voice-transaction", authMiddleware, async (req, res) => {
   try {
     const { text } = req.body;
@@ -204,7 +213,7 @@ app.post("/api/voice-transaction", authMiddleware, async (req, res) => {
 
     let type = /salary|income|credited/i.test(text) ? "income" : "expense";
     let category = "General";
-    const amountMatch = text.match(/(?:₹|rs\.?|rupees?)?\s?(\d+)/i);
+    const amountMatch = text.match(/(?:₹|rs\.?|rupees?)?\s?(\d+(?:\.\d+)?)/i);
     const amount = amountMatch ? parseFloat(amountMatch[1]) : null;
 
     if (/coffee/i.test(text)) category = "Coffee";
@@ -231,9 +240,7 @@ app.post("/api/voice-transaction", authMiddleware, async (req, res) => {
   }
 });
 
-// ====== Reminder Routes (create / read / update / delete) ======
-
-// Create
+// ====== Reminder Routes ======
 app.post("/api/reminders", authMiddleware, async (req, res) => {
   try {
     const { title, dueDate } = req.body;
@@ -246,7 +253,6 @@ app.post("/api/reminders", authMiddleware, async (req, res) => {
   }
 });
 
-// Read
 app.get("/api/reminders", authMiddleware, async (req, res) => {
   try {
     const reminders = await Reminder.find({ user: req.userId }).sort({ dueDate: 1 });
@@ -257,7 +263,6 @@ app.get("/api/reminders", authMiddleware, async (req, res) => {
   }
 });
 
-// Update
 app.put("/api/reminders/:id", authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
@@ -279,7 +284,6 @@ app.put("/api/reminders/:id", authMiddleware, async (req, res) => {
   }
 });
 
-// Delete
 app.delete("/api/reminders/:id", authMiddleware, async (req, res) => {
   try {
     const deleted = await Reminder.findOneAndDelete({ _id: req.params.id, user: req.userId });
@@ -292,7 +296,25 @@ app.delete("/api/reminders/:id", authMiddleware, async (req, res) => {
   }
 });
 
+// ====== Serve front-end build (optional) ======
+/*
+  If you build your React app into a `build` folder and deploy the server
+  to serve both API + frontend, this block serves the static files and
+  makes a fallback so refreshing client routes works (SPA).
+*/
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const buildPath = path.join(__dirname, "client", "build"); // adjust if your build output path differs
+
+if (process.env.SERVE_STATIC === "true") {
+  app.use(express.static(buildPath));
+  app.get("*", (req, res) => {
+    // if request is for api, let it through
+    if (req.path.startsWith("/api/")) return res.status(404).json({ error: "API route not found" });
+    res.sendFile(path.join(buildPath, "index.html"));
+  });
+}
+
 // ====== Start ======
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(` Server running on port ${PORT}`));
- 
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
