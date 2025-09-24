@@ -37,7 +37,7 @@ export const getTransactions = async () => {
 export const addTransaction = async (txn) => {
   try {
     const res = await apiClient.post(API, txn);
-    return res.data;
+    return res.data?.transaction || res.data; // unwrap { transaction }
   } catch (err) {
     console.error("❌ Error adding transaction:", err.response?.data || err);
     throw err;
