@@ -25,11 +25,7 @@ if (!MONGO_URI) {
 }
 
 mongoose
-  .connect(MONGO_URI, {
-    // options
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => {
     console.error("MongoDB Error:", err);
@@ -305,14 +301,30 @@ app.delete("/api/reminders/:id", authMiddleware, async (req, res) => {
 */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const buildPath = path.join(__dirname, "..", "client", "build");
-const shouldServeSpa = process.env.SERVE_STATIC === "true" || fs.existsSync(buildPath);
+const candidateBuildPaths = [
+  path.join(__dirname, "..", "client", "build"),
+  path.join(__dirname, "client", "build"),
+  path.join(__dirname, "..", "..", "client", "build"),
+];
+
+let resolvedBuildPath = null;
+for (const p of candidateBuildPaths) {
+  const indexPath = path.join(p, "index.html");
+  if (fs.existsSync(indexPath)) {
+    resolvedBuildPath = p;
+    break;
+  }
+}
+
+const shouldServeSpa = process.env.SERVE_STATIC === "true" && resolvedBuildPath;
 
 if (shouldServeSpa) {
-  app.use(express.static(buildPath));
+  app.use(express.static(resolvedBuildPath));
   // Serve index.html for all non-API GET requests (SPA fallback)
-  app.get(/^\/(?!api\/).*/, (req, res) => {
-    res.sendFile(path.join(buildPath, "index.html"));
+  app.get(/^\/(?!api\/).*/, (req, res, next) => {
+    const indexFile = path.join(resolvedBuildPath, "index.html");
+    if (!fs.existsSync(indexFile)) return next();
+    res.sendFile(indexFile);
   });
 }
 
