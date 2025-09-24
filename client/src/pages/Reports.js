@@ -69,7 +69,7 @@ export default function Reports() {
 
         {safeTxns.length === 0 && (
           <Typography variant="h6" align="center" color="white">
-            No Data Available
+            {t.noData}
           </Typography>
         )}
 
@@ -213,16 +213,16 @@ export default function Reports() {
             variant="h6"
             className="fw-bold text-center text-primary mb-3"
           >
-            📅 Monthly Report
+            📅 {t.monthlyReport}
           </Typography>
 
           <table className="table table-bordered table-hover table-striped text-center align-middle shadow">
             <thead className="table-dark">
               <tr>
-                <th>Month</th>
-                <th>Income</th>
-                <th>Expense</th>
-                <th>Net Balance</th>
+                <th>{t.month}</th>
+                <th>{t.totalIncome}</th>
+                <th>{t.totalExpense}</th>
+                <th>{t.netBalance}</th>
               </tr>
             </thead>
 
@@ -254,7 +254,7 @@ export default function Reports() {
 
             <tfoot className="table-primary fw-bold">
               <tr>
-                <td>Total</td>
+                <td>{t.total}</td>
                 <td className="text-success">₹{totalIncome}</td>
                 <td className="text-danger">₹{totalExpense}</td>
                 <td className={totalNet >= 0 ? "text-success" : "text-danger"}>

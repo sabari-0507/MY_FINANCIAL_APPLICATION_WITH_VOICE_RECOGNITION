@@ -50,6 +50,11 @@ const translations = {
     darkMode: "Dark Mode",
     saveChanges: "Save Changes",
     changesSaved: "Changes saved successfully!",
+    edit: "Edit",
+    delete: "Delete",
+    monthlyReport: "Monthly Report",
+    month: "Month",
+    total: "Total",
   },
   ta: {
     appTitle: "தனிநபர் நிதி",
@@ -98,6 +103,11 @@ const translations = {
     darkMode: "கரும்படை",
     saveChanges: "மாற்றங்களை சேமிக்க",
     changesSaved: "மாற்றங்கள் வெற்றிகரமாக சேமிக்கப்பட்டன!",
+    edit: "திருத்த",
+    delete: "அழிக்க",
+    monthlyReport: "மாதாந்திர அறிக்கை",
+    month: "மாதம்",
+    total: "மொத்தம்",
   },
   hi: {
     appTitle: "व्यक्तिगत वित्त",
@@ -146,6 +156,11 @@ const translations = {
     darkMode: "डार्क मोड",
     saveChanges: "परिवर्तन सहेजें",
     changesSaved: "परिवर्तन सफलतापूर्वक सहेजे गए!",
+    edit: "संपादित करें",
+    delete: "हटाएँ",
+    monthlyReport: "मासिक रिपोर्ट",
+    month: "महीना",
+    total: "कुल",
                   
   },
 };

@@ -14,7 +14,7 @@ import { FaUser, FaLock, FaBell } from "react-icons/fa";
 import { ThemeContext } from "../index";
 import { AuthContext } from "../context/AuthContext";
 import { LanguageContext } from "../context/LanguageContext";
-import { updatePasswordApi } from "../services/api"; // ✅ import API
+// Security card removed as requested; password update API no longer used
 
 export default function Settings() {
   const { mode, toggleTheme } = useContext(ThemeContext);
@@ -133,38 +133,7 @@ export default function Settings() {
               </Card>
             </Grid>
 
-            {/* Security Settings */}
-            <Grid item xs={12} md={6}>
-              <Card className="shadow-lg border-0 rounded-4 card-hover">
-                <CardContent>
-                  <Typography
-                    variant="h6"
-                    className="fw-bold text-danger mb-2"
-                  >
-                    <FaLock className="me-2" /> {t.security}
-                  </Typography>
-                  <Divider className="my-2" />
-                  <input
-                    type="password"
-                    className="form-control my-2 rounded-3 shadow-sm"
-                    placeholder={t.password}
-                    value={form.newPassword}
-                    onChange={(e) =>
-                      setForm({ ...form, newPassword: e.target.value })
-                    }
-                  />
-                  <input
-                    type="password"
-                    className="form-control my-2 rounded-3 shadow-sm"
-                    placeholder={t.confirmPassword}
-                    value={form.confirmPassword}
-                    onChange={(e) =>
-                      setForm({ ...form, confirmPassword: e.target.value })
-                    }
-                  />
-                </CardContent>
-              </Card>
-            </Grid>
+            {/* Security Settings removed as requested */}
 
             {/* Notifications & Appearance Settings */}
             <Grid item xs={12}>
