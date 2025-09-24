@@ -1,7 +1,7 @@
 // services/api.js
 import axios from "axios";
 
-export const BASE = process.env.REACT_APP_API_BASE || "http://localhost:5000";
+export const BASE = process.env.REACT_APP_API_BASE || "https://my-financial-application-with-voice-01oy.onrender.com";
 const API = `/api/transactions`;
 
 // Shared API client (headers managed by AuthContext)
