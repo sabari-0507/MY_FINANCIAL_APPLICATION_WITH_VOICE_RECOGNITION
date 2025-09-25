@@ -52,7 +52,7 @@ export default function Reports() {
 
   const totalIncome = totals.totalIncome;
   const totalExpense = totals.totalExpense;
-  const totalNet = totalIncome - totalExpense; // ✅ FIXED
+  const totalNet = totalIncome - totalExpense; 
 
   const downloadCsv = (rows, filename) => {
     if (!rows.length) return;

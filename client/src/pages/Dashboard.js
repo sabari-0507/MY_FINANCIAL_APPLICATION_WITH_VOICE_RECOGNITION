@@ -41,6 +41,8 @@ function Dashboard() {
 
   const balance = income - expense;
 
+  
+
   const downloadCsv = (rows, filename) => {
     if (!rows.length) return;
     const csv = [Object.keys(rows[0]).join(",")]
@@ -308,7 +310,7 @@ function Dashboard() {
         </Grid>
       </Box>
 
-      {/* ✅ Transaction List */}
+      {/* ✅ Transaction List (original layout) */}
       <Grid item xs={12} md={10} sx={{ margin: "0 auto" }}>
         <Paper elevation={8} className="p-4 rounded-4 shadow-lg">
           <Typography
@@ -321,11 +323,7 @@ function Dashboard() {
           </Typography>
           <Divider sx={{ mb: 3 }} />
 
-          <div className="d-flex justify-content-end gap-2 mb-2">
-            <button className="btn btn-outline-success btn-sm" onClick={exportTransactionsCsv}>{t.excel || "Excel"}</button>
-            <button className="btn btn-outline-danger btn-sm" onClick={exportTransactionsPdf}>{t.pdf || "PDF"}</button>
-          </div>
-          <div className="table-responsive">
+          <div className="table-responsive" style={{ maxWidth: 900, margin: "0 auto" }}>
             <table className="table table-striped table-hover table-bordered rounded">
               <thead className="table-dark text-center">
                 <tr>

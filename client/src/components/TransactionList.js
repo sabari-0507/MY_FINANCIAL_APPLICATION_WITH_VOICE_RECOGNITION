@@ -50,7 +50,7 @@ function TransactionList({ compactFilesOnly = false }) {
     }
     setOpen(false);
   };
-
+``
   return (
     <>
       <Table size="small" style={{ minWidth: compactFilesOnly ? 400 : 800 }}>
