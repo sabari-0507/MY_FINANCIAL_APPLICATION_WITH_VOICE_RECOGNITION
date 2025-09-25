@@ -323,6 +323,10 @@ function Dashboard() {
           </Typography>
           <Divider sx={{ mb: 3 }} />
 
+          <div className="d-flex justify-content-end gap-2 mb-2" style={{ maxWidth: 900, margin: "0 auto" }}>
+            <button className="btn btn-outline-success btn-sm" onClick={exportTransactionsCsv}>{t.excel || "Excel"}</button>
+            <button className="btn btn-outline-danger btn-sm" onClick={exportTransactionsPdf}>{t.pdf || "PDF"}</button>
+          </div>
           <div className="table-responsive" style={{ maxWidth: 900, margin: "0 auto" }}>
             <table className="table table-striped table-hover table-bordered rounded">
               <thead className="table-dark text-center">

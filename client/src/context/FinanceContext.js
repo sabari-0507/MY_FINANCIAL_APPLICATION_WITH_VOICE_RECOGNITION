@@ -35,6 +35,12 @@ export const FinanceProvider = ({ children }) => {
     }
   };
 
+  // Insert a transaction locally without calling API (e.g., after voice endpoint returns)
+  const addTransactionLocal = (txn) => {
+    if (!txn) return;
+    setTransactions((prev) => [txn, ...prev]);
+  };
+
   // Update a transaction
   const updateTransaction = async (id, updatedTxn) => {
     try {
@@ -60,6 +66,7 @@ export const FinanceProvider = ({ children }) => {
       value={{
         transactions,
         addTransaction,
+        addTransactionLocal,
         updateTransaction, // ✅ consistent name
         deleteTransaction,
       }}

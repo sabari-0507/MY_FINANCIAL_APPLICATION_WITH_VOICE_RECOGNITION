@@ -17,14 +17,14 @@ import {
 import { LanguageContext } from "../context/LanguageContext";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import MicIcon from "@mui/icons-material/Mic";
-import axios from "axios";
+import { apiClient } from "../services/api";
 import BackgroundWrapper from "./BackgroundWrapper";
 
 // 🔔 Bell sound
 const bellSound = "https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg";
 
 function Transactions() {
-  const { addTransaction } = useContext(FinanceContext);
+  const { addTransaction, addTransactionLocal } = useContext(FinanceContext);
   const { t } = useContext(LanguageContext);
 
   const [tripOpen, setTripOpen] = useState(false);
@@ -92,7 +92,7 @@ function Transactions() {
   const submitReminder = async () => {
     if (!reminder.title || !reminder.dueDate) return;
     try {
-      await axios.post("http://localhost:5000/api/reminders", reminder, {
+      await apiClient.post(`/api/reminders`, reminder, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setReminderOpen(false);
@@ -106,7 +106,7 @@ function Transactions() {
   // ⏳ Fetch Reminders
   const fetchReminders = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/reminders", {
+      const res = await apiClient.get(`/api/reminders`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setRemindersList(res.data);
@@ -136,16 +136,11 @@ function Transactions() {
       const transcript = event.results[0][0].transcript;
       setVoiceMsg(`🎙️ Heard: ${transcript}`);
       try {
-        const res = await axios.post(
-          "http://localhost:5000/api/voice-transaction",
-          { text: transcript },
-          {
-            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-          }
-        );
-        setVoiceMsg(
-          `✅ Saved: ${res.data.transaction.category} - ₹${res.data.transaction.amount}`
-        );
+        const res = await apiClient.post(`/api/voice-transaction`, { text: transcript });
+        const txn = res.data?.transaction;
+        setVoiceMsg(`✅ Saved: ${txn.category} - ₹${txn.amount}`);
+        // Immediately reflect in UI
+        addTransactionLocal(txn);
       } catch {
         setVoiceMsg("❌ Error saving transaction");
       }
